@@ -22,3 +22,9 @@ services:
         sync: false
       - key: ALLOWED_ORIGINS
         sync: false
+      # Self-pinger keeps the service warm by hitting its own public URL every 5 min.
+      # Set this to the deployed Render URL after first deploy.
+      - key: AEO_SELF_PING_URL
+        sync: false
+      - key: AEO_SELF_PING_INTERVAL
+        value: "300"

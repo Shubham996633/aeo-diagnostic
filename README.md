@@ -129,13 +129,20 @@ DELETE /reports/{id}?user_email=...                   → { deleted: true }
 ## Keeping the Render free tier warm
 
 Render free dynos sleep after 15 minutes of idle traffic, with a 30–60s cold start
-on the next hit. Three layered defenders keep this from biting reviewers:
+on the next hit. Four layered defenders keep this from biting reviewers:
 
-1. **GitHub Actions cron** — `.github/workflows/keepalive.yml` pings every 5 min.
+1. **In-process self-pinger** (best, zero external deps) — `app/keepalive.py`
+   spawns a background asyncio task at startup that pings the service's own
+   public `/health` URL every 5 min. Each ping leaves the container, hits
+   Render's load balancer, and comes back, which counts as external traffic.
+   Activate by setting `AEO_SELF_PING_URL=https://<your-render-url>` in the
+   Render service environment. Note: only KEEPS warm — cannot WAKE a dyno
+   that's already asleep.
+2. **GitHub Actions cron** — `.github/workflows/keepalive.yml` pings every 5 min.
    Set the repo variable `BACKEND_URL` to your Render URL to activate.
-2. **External uptime monitor** (recommended) — UptimeRobot free tier pings every
-   5 min from external infra. Reliable through GitHub peak-load windows.
-3. **Self-hosted Python pinger** — `scripts/keepalive.py` (stdlib only, no deps).
+3. **External uptime monitor** — UptimeRobot free tier pings every 5 min from
+   external infra. Survives GitHub peak-load windows.
+4. **Self-hosted Python pinger** — `scripts/keepalive.py` (stdlib only, no deps).
    Three ways to run it:
 
    ```bash

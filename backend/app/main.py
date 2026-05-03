@@ -1,17 +1,36 @@
+import asyncio
 import json
+import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from app import auth
+from app import auth, keepalive
 from app.config import ALLOWED_ORIGINS
 from app.models import DiagnoseRequest, DiagnoseReport
 from app.pipeline import run_diagnostic, stream_diagnostic
 from app.storage import save_report, load_report, list_reports, delete_report
 
-app = FastAPI(title="AEO Diagnostic", version="0.1.0")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    keepalive_task = keepalive.start()
+    try:
+        yield
+    finally:
+        if keepalive_task is not None:
+            keepalive_task.cancel()
+            try:
+                await keepalive_task
+            except (asyncio.CancelledError, BaseException):
+                pass
+
+
+app = FastAPI(title="AEO Diagnostic", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
