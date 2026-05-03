@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "aeo-diagnostic-backend"
+version = "0.1.0"
+description = "AEO Diagnostic — query GPT/Gemini with buyer-intent questions and grade brand visibility vs competitors"
+authors = ["Shubham Maurya <shubhammaurya996633@gmail.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.5"
+uvicorn = {extras = ["standard"], version = "^0.32.1"}
+pydantic = "^2.10.3"
+python-dotenv = "^1.0.1"
+httpx = "^0.28.1"
+openai = "^1.57.0"
+google-genai = "^0.3.0"
+bcrypt = "^4.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

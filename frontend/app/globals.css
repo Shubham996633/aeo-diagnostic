@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background: #fafafa;
+  color: #18181b;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl border border-ink-200 shadow-card;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-ink-800 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-ink-200 bg-white px-4 py-2.5 text-sm font-medium text-ink-800 transition hover:border-ink-400;
+  }
+  .input {
+    @apply w-full rounded-lg border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-900 placeholder-ink-400 focus:border-accent-ring focus:outline-none focus:ring-2 focus:ring-accent-soft;
+  }
+  .label {
+    @apply block text-xs font-medium uppercase tracking-wider text-ink-600 mb-1.5;
+  }
+}
+
+.prose-answer p { margin: 0.4em 0; line-height: 1.55; }
+.prose-answer ul, .prose-answer ol { margin: 0.4em 0; padding-left: 1.25rem; }
+.prose-answer ul { list-style: disc; }
+.prose-answer ol { list-style: decimal; }
+.prose-answer li { margin: 0.2em 0; }
+.prose-answer strong { font-weight: 600; color: #18181b; }
+.prose-answer em { font-style: italic; }
+.prose-answer h1, .prose-answer h2, .prose-answer h3 { font-weight: 600; margin: 0.6em 0 0.3em; }
+.prose-answer code { background: #f4f4f5; padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+.prose-answer a { color: #7c3aed; text-decoration: underline; }
