@@ -1,0 +1,24 @@
+# Render Blueprint — deploys the FastAPI backend.
+# Push this file to GitHub, then on Render:
+#   New → Blueprint → connect this repo → "Apply"
+# Set OPENAI_API_KEY and GEMINI_API_KEY in the Render dashboard after first deploy.
+
+services:
+  - type: web
+    name: aeo-diagnostic-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install poetry && poetry config virtualenvs.create false && poetry install --no-interaction --no-root
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
