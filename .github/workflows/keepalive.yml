@@ -1,13 +1,14 @@
 name: Keep backend warm
 
 # Render's free tier spins down a service after 15 minutes of inactivity.
-# This workflow pings the /health endpoint every 10 minutes to keep it warm.
-# Note: GitHub Actions schedules can drift up to ~10 minutes on free runners,
-# and scheduled workflows are auto-disabled on repos with no activity for 60 days.
+# This workflow pings the /health endpoint every 5 minutes (GH Actions floor)
+# to keep it warm. Schedules can still drift on free runners, so it's wise to
+# pair this with an external uptime monitor (e.g. UptimeRobot) for redundancy.
+# Scheduled workflows auto-disable after 60 days of repo inactivity.
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
