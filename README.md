@@ -126,6 +126,31 @@ DELETE /reports/{id}?user_email=...                   → { deleted: true }
 
 ---
 
+## Keeping the Render free tier warm
+
+Render free dynos sleep after 15 minutes of idle traffic, with a 30–60s cold start
+on the next hit. Three layered defenders keep this from biting reviewers:
+
+1. **GitHub Actions cron** — `.github/workflows/keepalive.yml` pings every 5 min.
+   Set the repo variable `BACKEND_URL` to your Render URL to activate.
+2. **External uptime monitor** (recommended) — UptimeRobot free tier pings every
+   5 min from external infra. Reliable through GitHub peak-load windows.
+3. **Self-hosted Python pinger** — `scripts/keepalive.py` (stdlib only, no deps).
+   Three ways to run it:
+
+   ```bash
+   # one-shot from any cron scheduler
+   */5 * * * * python3 /path/to/repo/scripts/keepalive.py --once \
+       >> /tmp/aeo-keepalive.log 2>&1
+
+   # long-running loop (tmux / nohup / Docker)
+   python3 scripts/keepalive.py
+
+   # systemd service (Linux) — see scripts/aeo-keepalive.service for setup
+   ```
+
+   Configurable via env vars: `AEO_BACKEND_URL`, `AEO_PING_INTERVAL`, `AEO_PING_TIMEOUT`.
+
 ## What's next
 
 - Per-engine recommendations (e.g., "GPT ranks you #2, Gemini #4 — focus on Gemini optimization")

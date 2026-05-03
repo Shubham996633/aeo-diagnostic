@@ -1,0 +1,31 @@
+# systemd unit for the AEO keepalive pinger.
+#
+# Install (Linux, requires sudo):
+#   sudo cp scripts/aeo-keepalive.service /etc/systemd/system/
+#   sudo sed -i "s|REPLACE_REPO_PATH|$(pwd)|" /etc/systemd/system/aeo-keepalive.service
+#   sudo sed -i "s|REPLACE_USER|$USER|" /etc/systemd/system/aeo-keepalive.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now aeo-keepalive
+#
+# Tail logs:   journalctl -u aeo-keepalive -f
+# Stop:        sudo systemctl stop aeo-keepalive
+# Status:      systemctl status aeo-keepalive
+
+[Unit]
+Description=AEO Diagnostic backend keepalive pinger
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=REPLACE_USER
+WorkingDirectory=REPLACE_REPO_PATH
+ExecStart=/usr/bin/env python3 REPLACE_REPO_PATH/scripts/keepalive.py
+Restart=always
+RestartSec=15
+Environment=AEO_PING_INTERVAL=300
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
