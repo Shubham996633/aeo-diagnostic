@@ -10,35 +10,14 @@ A Gemini agent drives the smart parts: brainstorming the questions, fuzzy-matchi
 brand mentions across alias variations, and writing strategic recommendations
 from the aggregated results.
 
----
-
-## Demo flow
-
-1. Sign up with email / password
-2. Enter a brand + category (or pick a preset: Athletic Greens, Liquid Death, Allbirds)
-3. Watch a **live agent activity feed** stream 5 phase blocks as the diagnostic runs
-   1. Generate buyer-intent questions
-   2. Query LLM engines in parallel (with per-engine progress bars)
-   3. Extract brand mentions
-   4. Score visibility & share-of-voice
-   5. Write strategic recommendations
-4. Land on a report card with:
-   - **AEO Score** (0–100, composite of visibility / position / sentiment)
-   - Per-engine visibility breakdown
-   - Share-of-voice donut vs competitors
-   - 3 actionable recommendations from the agent
-   - Expandable per-question results with rendered markdown answers
-
----
-
 ## APIs & tools used
 
-| | |
-|---|---|
-| **OpenAI API** | GPT-4o-mini answers buyer questions as one of the engines under test |
+|                       |                                                                                                                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OpenAI API**        | GPT-4o-mini answers buyer questions as one of the engines under test                                                                                                              |
 | **Google Gemini API** | Both an engine under test (Gemini 2.0 Flash) **and** the agent orchestrator (question generation, mention extraction, recommendations — all using structured-output JSON schemas) |
-| **bcrypt** | Password hashing for user accounts |
-| **SQLite** | Persistent store for users + reports |
+| **bcrypt**            | Password hashing for user accounts                                                                                                                                                |
+| **SQLite**            | Persistent store for users + reports                                                                                                                                              |
 
 ---
 
@@ -58,6 +37,7 @@ Server-Sent Events stream every agent step live to the browser.
 ```
 
 ### Backend (`backend/`)
+
 - **FastAPI** with Server-Sent Events for streaming pipeline progress
 - **Pipeline** fans out questions across both LLMs in parallel, extracts mentions,
   scores share-of-voice, generates recommendations
@@ -65,6 +45,7 @@ Server-Sent Events stream every agent step live to the browser.
 - **Storage** in SQLite — reports + users, JSON payload per report
 
 ### Frontend (`frontend/`)
+
 - **Next.js 15** App Router with Tailwind 3 + Recharts
 - **Real-time phase blocks** consume SSE events and render numbered phase cards
 - **Markdown** rendering on engine answers (proper `**bold**`, lists, headers)
@@ -77,12 +58,14 @@ Server-Sent Events stream every agent step live to the browser.
 ## Getting started
 
 ### Prerequisites
+
 - Python 3.11+ with [Poetry](https://python-poetry.org/)
 - Node 18+
 - An OpenAI API key
 - A Google Gemini API key (from [AI Studio](https://aistudio.google.com/apikey) — auto-enables the API)
 
 ### Backend
+
 ```bash
 cd backend
 cp .env.example .env
@@ -92,6 +75,7 @@ poetry run uvicorn app.main:app --reload --port 8000
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
